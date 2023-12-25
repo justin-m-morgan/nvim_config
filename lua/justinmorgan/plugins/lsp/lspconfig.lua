@@ -15,10 +15,13 @@ return {
     local keymap = vim.keymap -- for conciseness
 
     local opts = { noremap = true, silent = true }
-    local on_attach = function(client, bufnr)
+    local on_attach = function(_, bufnr)
       opts.buffer = bufnr
 
       -- set keybinds
+      opts.desc = "Format code"
+      keymap.set("n", "fc", vim.lsp.buf.format, opts)   -- format code
+
       opts.desc = "Show LSP references"
       keymap.set("n", "gR", "<cmd>Telescope lsp_references<CR>", opts) -- show definition, references
 
@@ -69,13 +72,6 @@ return {
       local hl = "DiagnosticSign" .. type
       vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
     end
-
-    -- configure elixir server
-    lspconfig["elixirls"].setup({
-      capabilities = capabilities,
-      on_attach = on_attach,
-      filetypes = { "ex", "exs", "heex" },
-    })
 
     -- configure html server
     lspconfig["html"].setup({
